@@ -42,3 +42,19 @@ class SourceRequestTests(unittest.TestCase):
         self.assertEqual(result['headers']['Origin'],'https://v.vidxgo.co')
         self.assertEqual(namespace['extract_modern_stream'](peer,url),result)
         self.assertEqual(fetch.call_count,2)
+
+    def test_upstream_denial_is_reported_without_exposing_urls_or_tokens(self):
+        import ast, time, threading, urllib.parse
+        from pathlib import Path
+        from unittest.mock import Mock
+        source = ast.parse((Path(__file__).resolve().parents[1] / 'app.py').read_text())
+        cls = next(n for n in source.body if isinstance(n, ast.ClassDef) and n.name == 'Engine')
+        method = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == 'extract_modern_stream')
+        fetch = Mock(return_value=Mock(status_code=403, text='<h1>Forbidden</h1>'))
+        namespace = {'time':time, 'urllib':urllib, 'media_get':fetch}
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[method],type_ignores=[])), 'source', 'exec'), namespace)
+        peer = Mock(); peer._modern_streams = {}; peer._modern_stream_lock = threading.RLock()
+        diagnostics = {}
+        result = namespace['extract_modern_stream'](peer, 'https://example.test/titles/1/watching', diagnostics=diagnostics)
+        self.assertIsNone(result)
+        self.assertEqual(diagnostics, {'stage':'watch_page', 'upstream_status':403, 'reason':'iframe_missing'})

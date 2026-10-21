@@ -1034,7 +1034,7 @@ class Engine:
         response = media_get(self.session, ref, headers=headers, timeout=8)
         return parse_player_source(response.text) if response.status_code == 200 else None
 
-    def extract_modern_stream(self, watch_url, force=False):
+    def extract_modern_stream(self, watch_url, force=False, diagnostics=None):
         from bs4 import BeautifulSoup
         with self._modern_stream_lock:
             cached = self._modern_streams.get(watch_url)
@@ -1044,10 +1044,14 @@ class Engine:
             document = BeautifulSoup(page.text, 'html.parser') if page.status_code == 200 else None
             iframe = document.select_one('.tc-player-frame iframe') if document else None
             if not iframe:
+                if diagnostics is not None:
+                    diagnostics.update(stage='watch_page', upstream_status=page.status_code, reason='iframe_missing')
                 return None
             embed = urllib.parse.urljoin(watch_url, iframe.get('src', ''))
             parsed = urllib.parse.urlsplit(embed)
             if parsed.scheme != 'https' or parsed.hostname != 'v.vidxgo.co':
+                if diagnostics is not None:
+                    diagnostics.update(stage='embed_host', reason='unexpected_host')
                 return None
             canonical = document.select_one('link[rel="canonical"]')
             source_url = canonical.get('href') if canonical else getattr(page, 'url', watch_url)
@@ -1066,6 +1070,8 @@ class Engine:
                 if player.status_code not in (200, 403, 429, 502, 503):
                     break
             if not stream:
+                if diagnostics is not None:
+                    diagnostics.update(stage='player_page', upstream_status=player.status_code, reason='source_missing')
                 return None
             extracted = {'master_m3u8': stream, 'vix_url': embed, 'headers': media_headers(embed),
                          'subtitle_tracks': parse_player_subtitles(player.text, embed)}
@@ -2258,8 +2264,11 @@ def extract_vixcloud():
     if target.hostname != domain.hostname or not target.path.startswith('/titles/'):
         return jsonify(success=False,error='Apri il titolo dal catalogo StreamingCommunity ripristinato'),400
     try:
-        result = engine.extract_modern_stream(url,force=data.get('force') is True)
-        if not result: return jsonify(success=False,error='Flusso StreamingCommunity temporaneamente non disponibile'),502
+        diagnostics = {}
+        result = engine.extract_modern_stream(url,force=data.get('force') is True,diagnostics=diagnostics)
+        if not result:
+            app.logger.warning('StreamingCommunity extraction unavailable: %s', diagnostics)
+            return jsonify(success=False,error='Flusso StreamingCommunity temporaneamente non disponibile',diagnostics=diagnostics),502
         proxy = '/api/stream/proxy?' + urllib.parse.urlencode({'url':url})
         tracks = [{**track,'uri':'/api/stream/segment?' + urllib.parse.urlencode({'url':track['uri'],'ref':track['referrer']})}
                   for track in result.get('subtitle_tracks',[])]
