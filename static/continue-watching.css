@@ -1,0 +1,116 @@
+/* Desktop resume cards share one rounded shell for artwork and text. */
+@media (min-width: 769px) {
+  #section-continue-watching #track-continue-watching {
+    padding: 18px 12px 30px !important;
+    gap: 18px;
+    scroll-padding-inline: 12px;
+    box-sizing: border-box;
+  }
+  #track-continue-watching .resume-card {
+    box-sizing: border-box;
+    flex: 0 0 224px;
+    width: 224px; min-width: 224px; max-width: 224px;
+    gap: 0;
+    overflow: hidden;
+    border-radius: 14px !important;
+    transform-origin: center;
+  }
+  #track-continue-watching .resume-card:hover:where(body:not(.card-hover-scrolling) *) {
+    transform: translateY(-4px);
+  }
+  #track-continue-watching .resume-card > div:first-child {
+    box-sizing: border-box;
+    width: 100% !important;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: 13px 13px 0 0;
+    box-shadow: none;
+  }
+  #track-continue-watching .resume-card picture {
+    display: block;
+    width: 100%; height: 100%;
+  }
+  #track-continue-watching .resume-card__thumb { border-radius: 0; }
+  #track-continue-watching .resume-card__info {
+    box-sizing: border-box;
+    width: 100%; min-width: 0;
+    padding: 14px 14px 16px;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  #track-continue-watching .resume-card__info h3 {
+    margin: 0;
+    min-height: 2.6em;
+    line-height: 1.3;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #track-continue-watching .resume-card .resume-card__progress,
+  #track-continue-watching .resume-card:hover:where(body:not(.card-hover-scrolling) *) .resume-card__progress {
+    height: 4px;
+    flex-shrink: 0;
+  }
+  #track-continue-watching .resume-card__meta {
+    min-width: 0;
+    font-size: .75rem;
+    line-height: 1.4;
+    color: #b9bdc6;
+  }
+}
+
+/* Mobile uses the same saved episode frame and landscape layout as desktop. */
+@media (max-width: 768px) {
+  body #home-multi-rows #track-continue-watching .resume-card {
+    flex: 0 0 240px !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
+    height: auto !important;
+    gap: 0 !important;
+    border-radius: 14px !important;
+  }
+  body #track-continue-watching .resume-card > div:first-child {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+    border-radius: 14px 14px 0 0 !important;
+  }
+  body #track-continue-watching .resume-card picture,
+  body #track-continue-watching .resume-card__thumb {
+    width: 100% !important;
+    height: 100% !important;
+    aspect-ratio: 16 / 9 !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+  }
+  body #track-continue-watching .resume-card .resume-card__info {
+    display: flex !important;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    gap: 8px;
+  }
+  body #track-continue-watching .resume-card .resume-card__info h3 {
+    display: block !important;
+    margin: 0;
+    font-size: .9rem;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  body #track-continue-watching .resume-card .resume-card__progress {
+    display: block !important;
+    height: 4px !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  body #track-continue-watching .resume-card .resume-card__meta {
+    display: flex !important;
+    opacity: 1 !important;
+    font-size: .75rem;
+    color: #b9bdc6;
+  }
+}

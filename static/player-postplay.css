@@ -1,0 +1,131 @@
+/* Player end card: independent of catalogue hover layouts. */
+#player-postplay-screen .postplay-content {
+  width: min(40vw, 480px) !important;
+  min-width: 0 !important;
+  max-height: calc(100dvh - 64px);
+  aspect-ratio: auto !important;
+  overflow: auto;
+  border-radius: 20px !important;
+}
+.up-next-card { background: #11141c; color: #fff; border: 1px solid rgba(255,255,255,.14); border-radius: 20px; overflow: hidden; box-shadow: 0 24px 64px #0008; }
+.up-next-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 22px; font-size:13px; font-weight:700; }
+#postplay-timer-text { color:#aeb3bf; font-size:12px; font-weight:500; font-variant-numeric:tabular-nums; }
+.up-next-preview { position:relative; height:clamp(110px,20vh,190px); background:#20232b; }
+.up-next-preview img { width:100%; height:100%; object-fit:cover; display:block; }
+.up-next-preview::after { content:''; position:absolute; inset:0; background:linear-gradient(transparent 50%,#11141c); pointer-events:none; }
+#postplay-season-ep-badge { position:absolute; top:12px; left:16px; padding:4px 8px; background:#11141ccc; border-radius:6px; font-size:11px; }
+.up-next-body { padding:16px 22px 12px; }
+#postplay-series-tag { margin:0 0 6px; color:#aeb3bf; font-size:13px; }
+#postplay-season-badge { margin:0 0 8px; color:#aeb3bf; font-size:12px; }
+#postplay-title { margin:0 0 10px; font-size:24px; line-height:1.2; font-weight:750; }
+#postplay-plot { margin:0 0 20px; color:#b9bdc7; font-size:14px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+#btn-postplay-play, #btn-postplay-expand { display:flex; align-items:center; justify-content:center; gap:9px; width:100%; min-height:44px; border:0; border-radius:10px; cursor:pointer; font-family:inherit; font-size:14px; font-weight:600; transition:background .2s ease; }
+#btn-postplay-play { background:#fff; color:#11141c; font-size:14px; font-weight:700; }
+#btn-postplay-play:hover { background:#e3e5eb; }
+#btn-postplay-expand { margin-top:7px; background:transparent; color:#b9bdc7; font-size:13px; }
+#btn-postplay-expand:hover { background:#ffffff0d; color:#fff; }
+#btn-postplay-play:focus-visible, #btn-postplay-expand:focus-visible { outline:2px solid #fff; outline-offset:-4px; }
+.up-next-progress { height:3px; background:#ffffff14; }
+#postplay-countdown-fill { height:100%; background:#e50914; transition:width .25s linear; }
+@media (max-width:700px) {
+  #player-postplay-screen .postplay-content { top:auto !important; bottom:20px !important; left:20px !important; right:20px !important; width:auto !important; transform:none !important; animation:none !important; max-height:58dvh; }
+  #player-modal.postplay-active .player-video-wrapper { top:20px !important; left:50% !important; transform:translateX(-50%) !important; width:52vw !important; min-width:0 !important; }
+  .up-next-preview { display:none; }
+  #postplay-title { font-size:20px; }
+}
+@media (prefers-reduced-motion:reduce) { #player-postplay-screen .postplay-content { animation:none !important; } }
+
+/* The current media element keeps playing; only its layout changes. */
+#postplay-video-background {
+  display:none; position:absolute; inset:-5%; width:110%; height:110%;
+  object-fit:cover; filter:blur(32px) brightness(.38); pointer-events:none; z-index:1;
+}
+#btn-postplay-return { display:none; }
+#player-modal.postplay-active #postplay-video-background { display:block; }
+#player-modal.postplay-active #web-video {
+  inset:auto; left:5%; top:50%; width:43%; height:auto; aspect-ratio:16/9;
+  transform:translateY(-50%); object-fit:contain; border-radius:14px;
+  box-shadow:0 24px 90px #0009; outline:1px solid #ffffff25;
+}
+#player-modal.postplay-active #btn-postplay-return {
+  display:block; position:absolute; top:calc(50% + 12.1vw + 18px); left:5%; width:43%;
+  z-index:20; border:0; background:transparent; color:#fff; font:inherit;
+  cursor:pointer; padding:10px; text-align:center;
+}
+#player-modal.postplay-active #player-next-ep-popup {
+  top:50%; bottom:auto; right:5%; width:39%; max-width:520px;
+  max-height:calc(100dvh - 180px); overflow:auto; transform:translateY(-50%);
+  transition:opacity .35s ease, visibility .35s ease;
+}
+#player-modal.postplay-active .next-ep-popup-card { border-radius:18px; background:rgba(15,17,23,.85); }
+#player-modal.postplay-active .next-ep-popup-body { padding:22px; }
+#btn-next-ep-popup-play {
+  display:block; width:100%; margin-top:18px; padding:13px 16px;
+  border:0; border-radius:8px; background:#fff; color:#101116;
+  font:inherit; font-weight:700; cursor:pointer;
+}
+#btn-next-ep-popup-play:hover { background:#e5e5e5; }
+#btn-next-ep-popup-play:focus-visible, #btn-postplay-return:focus-visible { outline:2px solid white; outline-offset:4px; }
+@media (max-width:600px) and (orientation:portrait) {
+  #player-modal.postplay-active #web-video { left:10%; top:95px; width:80%; transform:none; }
+  #player-modal.postplay-active #btn-postplay-return { left:10%; width:80%; top:calc(95px + 45vw); }
+  #player-modal.postplay-active #player-next-ep-popup { left:10%; right:auto; width:80%; top:calc(155px + 45vw); transform:none; max-height:calc(100dvh - 260px - 45vw); }
+  #player-modal.postplay-active .next-ep-popup-media { display:none; }
+  #player-modal.postplay-active .next-ep-popup-body { padding:16px; }
+}
+@media (max-height:600px) and (orientation:landscape) {
+  #player-modal.postplay-active .next-ep-popup-media { display:none; }
+}
+#player-modal.postplay-active .player-controls-pill {
+  top:auto !important; bottom:24px !important; z-index:400 !important;
+}
+#player-modal.postplay-active #btn-postplay-return { z-index:360; }
+
+.player-skip-intro-btn {
+  position: absolute;
+  right: 5%;
+  bottom: 110px;
+  z-index: 1500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 22px;
+  background: rgba(18, 20, 28, 0.88);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.player-skip-intro-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+}
+.player-skip-intro-btn:active {
+  transform: translateY(0);
+}
+.player-skip-intro-btn[hidden] {
+  display: none !important;
+}
+
+/* Buffered ranges sit between the empty rail and the played position. */
+#player-scrubber-buffer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border-radius: inherit;
+  background: transparent;
+  pointer-events: none;
+  transition: none;
+  z-index: 1;
+}
+#player-scrubber-played { z-index: 2; }
+#player-scrubber-thumb { z-index: 3; }
